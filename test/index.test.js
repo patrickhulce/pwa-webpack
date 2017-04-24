@@ -37,14 +37,11 @@ describe('PWAPlugin', () => {
     })
   }
 
-  describe('use favicon-html-plugin', () => {
+  describe('generate icons', () => {
     it('should run successfully', function (done) {
-      this.timeout(60000)
+      this.timeout(10000)
       const plugin = new Plugin({
-        favicon: {
-          prefix: 'icons/',
-          logo: `${__dirname}/fixtures/icon.png`,
-        },
+        favicon: `${__dirname}/fixtures/icon.png`,
       })
       testWithPlugins([plugin], done)
     })
@@ -62,12 +59,14 @@ describe('PWAPlugin', () => {
   })
 
   describe('generate a manifest', () => {
+    let manifest
     it('should run successfully', function (done) {
       this.timeout(10000)
       const plugin = new Plugin({
         name: 'My Application',
         shortName: 'MyApp',
         backgroundColor: '#333',
+        favicon: `${__dirname}/fixtures/icon.png`,
       })
       testWithPlugins([plugin], done)
     })
@@ -75,13 +74,25 @@ describe('PWAPlugin', () => {
     after(done => rimraf(DIST_FOLDER, done))
 
     it('should generate manifest.json', () => {
-      const manifest = JSON.parse(getFile('manifest.json'))
-      expect(manifest).to.eql({
-        name: 'My Application',
-        short_name: 'MyApp',
-        background_color: '#333',
-        orientation: 'portrait',
-        display: 'standalone',
+      manifest = JSON.parse(getFile('manifest.json'))
+    })
+
+    it('should pass through manifest options', () => {
+      expect(manifest).to.have.property('name', 'My Application')
+      expect(manifest).to.have.property('short_name', 'MyApp')
+      expect(manifest).to.have.property('background_color', '#333')
+      expect(manifest).to.have.property('orientation', 'portrait')
+      expect(manifest).to.have.property('display', 'standalone')
+    })
+
+    it('should add icons', () => {
+      expect(manifest).to.not.have.property('favicon')
+      const icons = manifest.icons
+      expect(icons).to.have.length(4)
+      expect(icons[0]).to.eql({
+        sizes: '192x192',
+        type: 'image/png',
+        src: '/test/fixtures/dist/icons/android-chrome-192x192.png',
       })
     })
   })

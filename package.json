@@ -29,7 +29,7 @@
     }
   },
   "dependencies": {
-    "favicons-webpack-plugin": "^0.0.7",
+    "@patrickhulce/favicons": "^1.0.1",
     "lodash": "^4.17.4",
     "webpack-sources": "^0.2.3"
   },
