@@ -41,7 +41,7 @@ describe('PWAPlugin', () => {
     it('should run successfully', function (done) {
       this.timeout(10000)
       const plugin = new Plugin({
-        favicon: `${__dirname}/fixtures/icon.png`,
+        icons: {source: `${__dirname}/fixtures/icon.png`},
       })
       testWithPlugins([plugin], done)
     })
@@ -63,10 +63,12 @@ describe('PWAPlugin', () => {
     it('should run successfully', function (done) {
       this.timeout(10000)
       const plugin = new Plugin({
-        name: 'My Application',
-        shortName: 'MyApp',
-        backgroundColor: '#333',
-        favicon: `${__dirname}/fixtures/icon.png`,
+        manifest: {
+          name: 'My Application',
+          shortName: 'MyApp',
+          backgroundColor: '#333',
+        },
+        icons: {source: `${__dirname}/fixtures/icon.png`},
       })
       testWithPlugins([plugin], done)
     })

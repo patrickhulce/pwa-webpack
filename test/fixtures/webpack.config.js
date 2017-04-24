@@ -11,7 +11,7 @@ module.exports = {
   plugins: [
     new HtmlPlugin({template: `${__dirname}/index.html`}),
     new Plugin({
-      favicon: `${__dirname}/icon.png`
+      icons: {source: `${__dirname}/icon.png`}
     })
   ],
 }
