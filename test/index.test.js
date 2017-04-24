@@ -37,12 +37,20 @@ describe('PWAPlugin', () => {
     })
   }
 
-  describe('generate icons', () => {
+  describe('advanced usage', () => {
+    let manifest
+
     it('should run successfully', function (done) {
       this.timeout(10000)
       const plugin = new Plugin({
+        manifest: {
+          name: 'My Application',
+          shortName: 'MyApp',
+          backgroundColor: '#333',
+        },
         icons: {source: `${__dirname}/fixtures/icon.png`},
       })
+
       testWithPlugins([plugin], done)
     })
 
@@ -56,24 +64,6 @@ describe('PWAPlugin', () => {
       expect(chrome).to.have.property('size').greaterThan(5000)
       expect(apple).to.have.property('size').greaterThan(5000)
     })
-  })
-
-  describe('generate a manifest', () => {
-    let manifest
-    it('should run successfully', function (done) {
-      this.timeout(10000)
-      const plugin = new Plugin({
-        manifest: {
-          name: 'My Application',
-          shortName: 'MyApp',
-          backgroundColor: '#333',
-        },
-        icons: {source: `${__dirname}/fixtures/icon.png`},
-      })
-      testWithPlugins([plugin], done)
-    })
-
-    after(done => rimraf(DIST_FOLDER, done))
 
     it('should generate manifest.json', () => {
       manifest = JSON.parse(getFile('manifest.json'))
@@ -87,8 +77,7 @@ describe('PWAPlugin', () => {
       expect(manifest).to.have.property('display', 'standalone')
     })
 
-    it('should add icons', () => {
-      expect(manifest).to.not.have.property('favicon')
+    it('should add icons to manifest', () => {
       const icons = manifest.icons
       expect(icons).to.have.length(4)
       expect(icons[0]).to.eql({
@@ -96,6 +85,18 @@ describe('PWAPlugin', () => {
         type: 'image/png',
         src: '/test/fixtures/dist/icons/android-chrome-192x192.png',
       })
+    })
+
+    it('should add icons to HTML', () => {
+      const html = getFile('index.html')
+      expect(html).to.include('<!DOCTYPE html>')
+
+      const relIcons = html.match(/rel=.icon./g)
+      const relFavicon = html.match(/rel=.shortcut icon/g)
+      const relAppleIcon = html.match(/rel=.apple-touch-icon/g)
+      expect(relIcons).to.have.length(3)
+      expect(relFavicon).to.have.length(1)
+      expect(relAppleIcon).to.have.length(1)
     })
   })
 })
