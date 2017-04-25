@@ -43,6 +43,10 @@ describe('PWAPlugin', () => {
     it('should run successfully', function (done) {
       this.timeout(10000)
       const plugin = new Plugin({
+        meta: {
+          alreadyThere: 'ignored',
+          ieOnly: {'http-equiv': 'X-UA-Compatible', content: 'IE=edge'},
+        },
         manifest: {
           name: 'My Application',
           shortName: 'MyApp',
@@ -97,6 +101,15 @@ describe('PWAPlugin', () => {
       expect(relIcons).to.have.length(3)
       expect(relFavicon).to.have.length(1)
       expect(relAppleIcon).to.have.length(1)
+    })
+
+    it('should add meta to HTML', () => {
+      const html = getFile('index.html')
+      expect(html).to.include('<!DOCTYPE html>')
+      expect(html).to.match(/name="viewport"/)
+      expect(html).to.match(/name="already-there"/)
+      expect(html).to.match(/content="existing"/)
+      expect(html).to.match(/X-UA-Compatible/)
     })
   })
 })
