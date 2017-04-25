@@ -10,8 +10,8 @@ node_js:
   - v6
 before_install:
   - npm install -g coveralls
-before_script:
-  - npm prune
+install:
+  - yarn install --force
 script:
   - npm run test:lint
   - npm run test:coverage
