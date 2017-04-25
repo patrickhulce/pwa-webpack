@@ -42,10 +42,17 @@ describe('PWAPlugin', () => {
 
     it('should run successfully', function (done) {
       this.timeout(10000)
-      testWithPlugins([new Plugin()], done)
+      testWithPlugins([new Plugin({
+        icons: `${__dirname}/fixtures/icon.png`,
+      })], done)
     })
 
     after(done => rimraf(DIST_FOLDER, done))
+
+    it('should generate favicon files', () => {
+      const favicon = getFileStats('icons/favicon.ico')
+      expect(favicon).to.have.property('size').greaterThan(5000)
+    })
 
     it('should generate manifest.json', () => {
       manifest = JSON.parse(getFile('manifest.json'))
@@ -72,13 +79,14 @@ describe('PWAPlugin', () => {
     it('should run successfully', function (done) {
       this.timeout(10000)
       const plugin = new Plugin({
-        title: 'My Application Title',
+        title: 'My Application',
+        themeColor: '#393',
+
         meta: {
           alreadyThere: 'ignored',
           ieOnly: {'http-equiv': 'X-UA-Compatible', content: 'IE=edge'},
         },
         manifest: {
-          name: 'My Application',
           shortName: 'MyApp',
           backgroundColor: '#333',
           __filename__: 'my-manifest.json',
@@ -107,7 +115,9 @@ describe('PWAPlugin', () => {
     it('should pass through manifest options', () => {
       expect(manifest).to.have.property('name', 'My Application')
       expect(manifest).to.have.property('short_name', 'MyApp')
+      expect(manifest).to.have.property('theme_color', '#393')
       expect(manifest).to.have.property('background_color', '#333')
+      expect(manifest).to.have.property('start_url', '/test/fixtures/dist/index.html')
       expect(manifest).to.have.property('orientation', 'portrait')
       expect(manifest).to.have.property('display', 'standalone')
     })
@@ -137,12 +147,18 @@ describe('PWAPlugin', () => {
     it('should add meta to HTML', () => {
       const html = getFile('index.html')
       expect(html).to.include('<!DOCTYPE html>')
+      // contains default meta values
       expect(html).to.match(/charset="utf-8"/)
       expect(html).to.match(/name="viewport"/)
       expect(html).to.match(/name="apple-mobile-web-app-capable"/)
+
+      // doesn't override existing meta values
       expect(html).to.match(/name="already-there"/)
       expect(html).to.match(/content="existing"/)
+
+      // contains custom meta values
       expect(html).to.match(/X-UA-Compatible/)
+      expect(html).to.match(/theme-color[^>]+393/)
     })
 
     it('should add manifest to HTML', () => {
@@ -155,7 +171,7 @@ describe('PWAPlugin', () => {
     it('should add title to HTML', () => {
       const html = getFile('index.html')
       expect(html).to.include('<!DOCTYPE html>')
-      expect(html).to.include('<title>My Application Title</title>')
+      expect(html).to.include('<title>My Application</title>')
     })
   })
 })
