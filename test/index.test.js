@@ -62,6 +62,7 @@ describe('PWAPlugin', () => {
       expect(html).to.include('<!DOCTYPE html>')
       expect(html).to.match(/charset="utf-8"/)
       expect(html).to.match(/name="viewport"/)
+      expect(html).to.match(/name="apple-mobile-web-app-capable"/)
     })
   })
 
@@ -137,6 +138,7 @@ describe('PWAPlugin', () => {
       expect(html).to.include('<!DOCTYPE html>')
       expect(html).to.match(/charset="utf-8"/)
       expect(html).to.match(/name="viewport"/)
+      expect(html).to.match(/name="apple-mobile-web-app-capable"/)
       expect(html).to.match(/name="already-there"/)
       expect(html).to.match(/content="existing"/)
       expect(html).to.match(/X-UA-Compatible/)
