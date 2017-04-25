@@ -140,5 +140,12 @@ describe('PWAPlugin', () => {
       expect(html).to.match(/content="existing"/)
       expect(html).to.match(/X-UA-Compatible/)
     })
+
+    it('should add manifest to HTML', () => {
+      const html = getFile('index.html')
+      expect(html).to.include('<!DOCTYPE html>')
+      expect(html).to.include('rel="manifest"')
+      expect(html).to.include('href="/test/fixtures/dist/manifest.json"')
+    })
   })
 })
