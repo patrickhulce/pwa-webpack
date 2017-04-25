@@ -72,6 +72,7 @@ describe('PWAPlugin', () => {
     it('should run successfully', function (done) {
       this.timeout(10000)
       const plugin = new Plugin({
+        title: 'My Application Title',
         meta: {
           alreadyThere: 'ignored',
           ieOnly: {'http-equiv': 'X-UA-Compatible', content: 'IE=edge'},
@@ -149,6 +150,12 @@ describe('PWAPlugin', () => {
       expect(html).to.include('<!DOCTYPE html>')
       expect(html).to.include('rel="manifest"')
       expect(html).to.include('href="/test/fixtures/dist/my-manifest.json"')
+    })
+
+    it('should add title to HTML', () => {
+      const html = getFile('index.html')
+      expect(html).to.include('<!DOCTYPE html>')
+      expect(html).to.include('<title>My Application Title</title>')
     })
   })
 })
