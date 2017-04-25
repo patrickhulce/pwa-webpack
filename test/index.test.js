@@ -79,6 +79,7 @@ describe('PWAPlugin', () => {
           name: 'My Application',
           shortName: 'MyApp',
           backgroundColor: '#333',
+          __filename__: 'my-manifest.json',
         },
         icons: {source: `${__dirname}/fixtures/icon.png`},
       })
@@ -98,7 +99,7 @@ describe('PWAPlugin', () => {
     })
 
     it('should generate manifest.json', () => {
-      manifest = JSON.parse(getFile('manifest.json'))
+      manifest = JSON.parse(getFile('my-manifest.json'))
     })
 
     it('should pass through manifest options', () => {
@@ -145,7 +146,7 @@ describe('PWAPlugin', () => {
       const html = getFile('index.html')
       expect(html).to.include('<!DOCTYPE html>')
       expect(html).to.include('rel="manifest"')
-      expect(html).to.include('href="/test/fixtures/dist/manifest.json"')
+      expect(html).to.include('href="/test/fixtures/dist/my-manifest.json"')
     })
   })
 })
